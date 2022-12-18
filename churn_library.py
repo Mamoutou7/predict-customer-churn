@@ -1,21 +1,32 @@
 # library doc string
 '''
-Predict Customer Churn Project
+Predict Customer Churn Project with Clean Code Principles from the Machine Learning DevOps Nanodegree Program
 
-Author: Mamoutou
+Author: Mamoutou FOFANA
+
 Date: December 16, 2022
+
+release: 0.0.1
 '''
 
-# import libraries
-import os
-import pandas as pd
+# linear algebra
 import numpy as np
+# data processing, CSV file I/O (e.g. pd.read_csv)
+import pandas as pd
+from datetime import date
+# For creating plots
 import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 import logging
-
+import os
 os.environ['QT_QPA_PLATFORM']='offscreen'
 
+
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+sns.set(style='white')
 
 
 logging.basicConfig(
@@ -36,10 +47,9 @@ def import_data(pth):
     '''
     
     try:
-        # Trying to read file
+        # load the dataset from csv file path
         df = pd.read_csv(pth)
-        logging.info("SUCCESS: There are {} rows in your dataframe".format(df.shape))
-        #print(df.head())
+        logging.info("SUCCESS: There are {} rows in your dataframe ".format(df.shape))
         return df 
     except FileNotFoundError:
         logging.error("ERROR: We are not able to find file {} ".format(pth))
@@ -53,52 +63,50 @@ def perform_eda(df):
     output:
             None
     '''
+
     try:
         # Verifying that the df variable df has dataFrame type
         assert isinstance(df, pd.DataFrame)
         logging.info("SUCCESS: df is DataFrame type")
-        
-        # Categorical columns definition 
-        cat_columns = [
-        'Gender',
-        'Education_Level',
-        'Marital_Status',
-        'Income_Category',
-        'Card_Category'                
-        ]
-        # 
-        quant_columns = [
-        'Customer_Age',
-        'Dependent_count', 
-        'Months_on_book',
-        'Total_Relationship_Count', 
-        'Months_Inactive_12_mon',
-        'Contacts_Count_12_mon', 
-        'Credit_Limit', 
-        'Total_Revolving_Bal',
-        'Avg_Open_To_Buy', 
-        'Total_Amt_Chng_Q4_Q1', 
-        'Total_Trans_Amt',
-        'Total_Trans_Ct', 
-        'Total_Ct_Chng_Q4_Q1', 
-        'Avg_Utilization_Ratio'
-        ]
-
-        df['Churn'] = df['Attrition_Flag'].apply(lambda val: 0 if val == "Existing Customer" else 1)
-        plt.figure(figsize=(20, 10))
-        df['Churn'].hist()
-        plt.savefig('./eda/Churn.png')
-
     except AssertionError:
-        logging.error("ERROR: argument df in perform_eda must be {} but is {}".format(
-                pd.DataFrame, type(df)))
-        
+        logging.error("ERROR: argument df in perform_eda must be {} but is {}".format(pd.DataFrame, type(df)))
+
+    # A deep copy of the DataFrame (df)
+    eda_df = df.copy(deep=True)
+
+    # Computing and plotting the Churn distribution
+    eda_df['Churn'] = eda_df['Attrition_Flag'].apply(lambda val: 0 if val == "Existing Customer" else 1)
+
+    # Plotting the Churn distribution
+    plt.figure(figsize=(20, 10))
+    eda_df['Churn'].hist()
+    plt.savefig('./images/eda/churn_distribution.png')
+
+    # Plotting the Customer Age distribution plotting
+    plt.figure(figsize=(20, 10))
+    eda_df['Customer_Age'].hist()
+    plt.savefig('./images/eda/customer_age_distribution.png')
+
+    # Computing and plotting Marital Status distribution
+    plt.figure(figsize=(20, 10))
+    eda_df.Marital_Status.value_counts('normalize').plot(kind='bar')
+    plt.savefig('./images/eda/marital_status_distribution.png')
+
+    # Computing and plotting the Total Transaction Distribution
+    plt.figure(figsize=(20, 10))
+    sns.histplot(eda_df['Total_Trans_Ct'], stat='density', kde=True)
+    plt.savefig('./images/eda/total_transaction_distribution.png')
+
+    # Heatmap plotting
+    plt.figure(figsize=(20, 10))
+    sns.heatmap(eda_df.corr(), annot=False, cmap='Dark2_r', linewidths=2)
+    plt.savefig('./images/eda/heatmap.png')
 
 
 def encoder_helper(df, category_lst, response):
     '''
     helper function to turn each categorical column into a new column with
-    propotion of churn for each category - associated with cell 15 from the notebook
+    proportion of churn for each category - associated with cell 15 from the notebook
 
     input:
             df: pandas dataframe
@@ -108,7 +116,22 @@ def encoder_helper(df, category_lst, response):
     output:
             df: pandas dataframe with new columns for
     '''
-    pass
+
+    # A deep copy of the DataFrame (df)
+    encoder_df = df.copy(deep=True)
+
+    for category in category_lst:
+        column_lst = []
+        column_groups = df.groupby(category).mean()['Churn']
+        for val in df[category]:
+            column_lst.append(column_groups.loc[val])
+        if response:
+            encoder_df[category + '_' + response] = column_lst
+        else:
+            encoder_df[category] = column_lst
+
+    return encoder_df
+
 
 
 def perform_feature_engineering(df, response):
@@ -174,9 +197,13 @@ def train_models(X_train, X_test, y_train, y_test):
     pass
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
+    # import bank data
+    INITIAL_DF = import_data("./data/bank_data.csv")
 
-    df = "./data/bank_data.csv"
+    # perform Exploratory Data Analysis (EDA)
+    #eda_df = perform_eda(df=INITIAL_DF)
 
-    import_data(df)
-    perform_eda(df)
+    encoded_df = encoder_helper(df=INITIAL_DF, category_lst=['Gender', 'Education_Level'], response='Churn')
+    print(encoded_df.head())
+
