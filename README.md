@@ -9,7 +9,7 @@ In the project, we identify credit card customers that are most likely to churn.
 
 ## Files and data description
 Overview of the files and data present in the root directory. 
-
+```bash
 ./predict_customer_churn
                        |------data
                        |         |--- bank_data.csv
@@ -25,6 +25,9 @@ Overview of the files and data present in the root directory.
                        |------ README.md
                        |------ requirements.txt
                        |
+
+```
+
 ## Running Files
 Running the library file using the following command.
   
