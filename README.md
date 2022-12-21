@@ -24,8 +24,6 @@ Overview of the files and data present in the root directory.
                        |------ LICENSE
                        |------ README.md
                        |------ requirements.txt
-                       |
-
 ```
 
 ## Running Files
