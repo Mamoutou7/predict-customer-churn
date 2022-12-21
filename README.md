@@ -28,8 +28,9 @@ Overview of the files and data present in the root directory.
 
 ## Running Files
 Running the library file using the following command.
-  
-  python churn_library.py
+```bash 
+ python churn_library.py
+```
 
 The following steps executed:
 
