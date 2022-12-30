@@ -9,21 +9,22 @@ In the project, we identify credit card customers that are most likely to churn.
 
 ## Files and data description
 Overview of the files and data present in the root directory. 
+
 ```bash
-./predict_customer_churn
-                       |------data
-                       |         |--- bank_data.csv
-                       |------ images/
-                       |          |--- eda/
-                       |          |--- results/
-                       |
-                       |------ logs/
-                       |------ models/
-                       |------ churn_library.py
-                       |------ churn_script_logging_and_tests.py
-                       |------ LICENSE
-                       |------ README.md
-                       |------ requirements.txt
+.
+├── Guide.ipynb          # Given: Getting started and troubleshooting tips
+├── churn_notebook.ipynb # Given: Contains the code to be refactored
+├── churn_library.py     # ToDo: Different functions
+├── churn_script_logging_and_tests.py # Tests and logs
+├── README.md            # Project overview, and instructions to use the code
+├── data                 # Read this data
+│   └── bank_data.csv
+├── images               # Store EDA results 
+│   ├── eda
+│   └── results
+├── logs                 # Store logs
+└── models               # Store models
+
 ```
 
 ## Running Files
