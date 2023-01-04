@@ -1,0 +1,9 @@
+root - INFO - SUCCESS: import_data tested
+root - INFO - DataFrame shape -> Rows: 10127	Columns: 20
+root - INFO - SUCCESS: perfom_eda tested successfully: 
+root - INFO - SUCCESS: File Churn_Distribution.png was found
+root - INFO - SUCCESS: File Customer_Age_Distribution.png was found
+root - INFO - SUCCESS: File Marital_Status_Distribution.png was found
+root - INFO - SUCCESS: File Total_Trans_Ct_Distribution.png was found
+root - INFO - SUCCESS: File Heatmap.png was found
+root - INFO - SUCCESS: encoder_helper tested successfully: 
